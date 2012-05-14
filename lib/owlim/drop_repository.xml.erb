@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transaction>
+  <clear>
+    <contexts>
+      <bnode><%= bnode_id %></bnode>
+    </contexts>
+  </clear>
+  <remove>
+    <bnode><%= bnode_id %></bnode>
+    <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+    <uri>http://www.openrdf.org/config/repository#RepositoryContext</uri>
+    <contexts/>
+  </remove>
+</transaction>

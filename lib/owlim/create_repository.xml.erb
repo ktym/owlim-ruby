@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transaction>
+  <add>
+    <bnode><%= uuid0 %></bnode>
+    <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+    <uri>http://www.openrdf.org/config/repository#RepositoryContext</uri>
+    <contexts/>
+  </add>
+  <add>
+    <bnode><%= uuid1 %></bnode>
+    <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+    <uri>http://www.openrdf.org/config/repository#Repository</uri>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid1 %></bnode>
+    <uri>http://www.openrdf.org/config/repository#repositoryID</uri>
+    <literal><%= repository_id %></literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid1 %></bnode>
+    <uri>http://www.w3.org/2000/01/rdf-schema#label</uri>
+    <literal><%= repository_label %></literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid2 %></bnode>
+    <uri>http://www.openrdf.org/config/repository#repositoryType</uri>
+    <literal>openrdf:SailRepository</literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid3 %></bnode>
+    <uri>http://www.openrdf.org/config/sail#sailType</uri>
+    <literal>swiftowlim:Sail</literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid3 %></bnode>
+    <uri>http://www.ontotext.com/trree/owlim#ruleset</uri>
+    <literal>owl-horst-optimized</literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid3 %></bnode>
+    <uri>http://www.ontotext.com/trree/owlim#imports</uri>
+    <literal></literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid3 %></bnode>
+    <uri>http://www.ontotext.com/trree/owlim#repository-type</uri>
+    <literal>in-memory-repository</literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid3 %></bnode>
+    <uri>http://www.ontotext.com/trree/owlim#defaultNS</uri>
+    <literal><%= default_namespace %></literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid3 %></bnode>
+    <uri>http://www.ontotext.com/trree/owlim#storage-folder</uri>
+    <literal>storage</literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid3 %></bnode>
+    <uri>http://www.ontotext.com/trree/owlim#entity-index-size</uri>
+    <literal>200000</literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+  <bnode><%= uuid3 %></bnode>
+    <uri>http://www.ontotext.com/trree/owlim#noPersist</uri>
+    <literal>false</literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid3 %></bnode>
+    <uri>http://www.ontotext.com/trree/owlim#base-URL</uri>
+    <literal><%= base_url %></literal>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid2 %></bnode>
+    <uri>http://www.openrdf.org/config/repository/sail#sailImpl</uri>
+    <bnode><%= uuid3 %></bnode>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+  <add>
+    <bnode><%= uuid1 %></bnode>
+    <uri>http://www.openrdf.org/config/repository#repositoryImpl</uri>
+    <bnode><%= uuid2 %></bnode>
+    <contexts>
+      <bnode><%= uuid0 %></bnode>
+    </contexts>
+  </add>
+</transaction>

@@ -1,0 +1,225 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'owlim'
+
+def help
+  puts <<HELP
+
+Usage:
+
+  > owlim command [repository [arguments]]
+
+Info commands:
+
+  # Show the Sesame OWLIM server URI in use
+  > owlim host
+
+  # Show list of repositories
+  > owlim list
+
+  # Show number of triples in a repository
+  > owlim size repository
+
+CRUD commands:
+
+  # Create a new repository
+  > owlim create repository
+
+  # Import a RDF file to a repository
+  > owlim import repository file [format]
+
+  # Export contents of a repository in RDF (default is RDF/XML)
+  > owlim export repository [format]
+
+  # Clear the contents of a repository
+  > owlim clear repository
+
+  # Drop a repository
+  > owlim drop repository
+
+  Valid formats for import and export are:
+    * RDF/XML: "rdf" or "rdfxml"
+    * Turtle: "ttl" or "turtle"
+    * N3: "n3"
+    * N-Triples: "nt"
+    * TriX: "trix"
+    * TriG: "trig"
+    * Bionary RDF: "rdfbin"
+  If not specified, format will be guessed from the file name suffix for import.
+
+Query commands:
+
+  Query a repository by SPARQL or a keyword.
+  Result will be printed in the tabular text format by default.
+
+  Available alternative formats are:
+    * "json" for "application/sparql-result+json"
+    * "xml" for "application/sparql-result+xml".
+
+  # SPARQL query against a repository
+  > owlim query repository "SPARQL" [format]
+
+  # Search for literal objects matching a keyword and return relevant triples
+  > owlim find repository "keyword" [format]
+
+Environmental variable:
+
+  Specify your OWLIM server by the environmental variable 'SESAME_URL'.
+  Default is "http://localhost:8080/openrdf-sesame"
+
+  # for B shell
+  > export SESAME_URL="http://example.org/openrdf-sesame"
+
+  # for C shell
+  > setenv SESAME_URL "http://example.org/openrdf-sesame"
+
+HELP
+end
+
+def usage
+  puts <<USAGE
+Help:
+
+  > owlim help
+
+Examples:
+
+  > owlim host
+  > owlim list
+
+  > owlim create hoge
+  > owlim import hoge ../hoge.ttl
+  > owlim export hoge > hoge.rdf
+  > owlim size   hoge
+  > owlim clear  hoge
+  > owlim drop   hoge
+
+  > owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000'
+  > owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' json
+  > owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' xml
+
+  > owlim find   hoge "fuga"
+  > owlim find   hoge "fuga" json
+  > owlim find   hoge "fuga" xml
+
+USAGE
+end
+
+host = ENV['SESAME_URL'] || "http://localhost:8080/openrdf-sesame"
+serv = OWLIM.new(host)
+
+command = ARGV.shift
+repository = ARGV.shift
+arguments = ARGV
+
+case command
+when "host"
+  puts serv.sesame_url
+when "list"
+  puts serv.list
+when "size"
+  if repository
+    puts serv.size(repository)
+  else
+    $stderr.puts "ERROR: missing a repository name."
+    $stderr.puts "> owlim size repository"
+  end
+when "create"
+  if repository
+    serv.create(repository)
+    $stderr.puts "#{repository} created"
+  else
+    $stderr.puts "ERROR: missing a repository name."
+    $stderr.puts "> owlim create repository"
+  end
+when "import"
+  if repository
+    if arguments.size > 1
+      rdf_file = arguments.shift
+      format = arguments.shift
+      serv.import(repository, rdf_file, :format => format)
+      $stderr.puts "#{rdf_file} imported to #{repository}"
+    elsif arguments.size > 0
+      rdf_file = arguments.shift
+      serv.import(repository, rdf_file)
+      $stderr.puts "#{rdf_file} imported to #{repository}"
+    else
+      $stderr.puts "ERROR: missing a file to import."
+      $stderr.puts "> owlim import repository file [format]"
+    end
+  else
+    $stderr.puts "ERROR: missing a repository name to import."
+    $stderr.puts "> owlim import repository file [format]"
+  end
+when "export"
+  if repository
+    if arguments.size > 0
+      format = arguments.shift
+      puts serv.export(repository, :format => format)
+    else
+      puts serv.export(repository)
+    end
+  else
+    $stderr.puts "ERROR: missing a repository name to export."
+    $stderr.puts "> owlim export repository [format]"
+  end
+when "clear"
+  if repository
+    serv.clear(repository)
+    $stderr.puts "#{repository} cleared"
+  else
+    $stderr.puts "ERROR: missing a repository name to clear."
+    $stderr.puts "> owlim clear repository"
+  end
+when "drop"
+  if repository
+    serv.drop(repository)
+    $stderr.puts "#{repository} dropped"
+  else
+    $stderr.puts "ERROR: missing a repository name to drop."
+    $stderr.puts "> owlim drop repository"
+  end
+when "query"
+  if repository
+    if arguments.size > 1
+      sparql = arguments.shift
+      format = arguments.shift
+      $stderr.puts "WARNING: invalid format #{format} (use 'xml' or 'json')" unless format[/(xml|json)/]
+      serv.query(repository, sparql, :format => format) {|x| print x}
+    elsif arguments.size > 0
+      sparql = arguments.shift
+      serv.query(repository, sparql) {|x| print x}
+    else
+      $stderr.puts "ERROR: missing SPARQL to query."
+      $stderr.puts "> owlim query repository SPARQL [format]"
+    end
+  else
+    $stderr.puts "ERROR: missing a repository name to query."
+    $stderr.puts "> owlim query repository SPARQL [format]"
+  end
+when "find"
+  if repository
+    if arguments.size > 1
+      keyword = arguments.shift
+      format = arguments.shift
+      $stderr.puts "WARNING: invalid format '#{format}' (use 'xml' or 'json')" unless format[/(xml|json)/]
+      serv.find(repository, keyword, :format => format) {|x| print x}
+    elsif arguments.size > 0
+      keyword = arguments.shift
+      serv.find(repository, keyword) {|x| print x}
+    else
+      $stderr.puts "ERROR: missing a keyword to search."
+      $stderr.puts "> owlim find repository keyword"
+    end
+  else
+    $stderr.puts "ERROR: missing a repository name to search."
+    $stderr.puts "> owlim find repository keyword"
+  end
+when "help"
+  help
+  usage
+else
+  usage
+end
+

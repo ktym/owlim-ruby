@@ -1,0 +1,194 @@
+= OWLIM-RUBY
+
+This is a Semantic Web program which provides a frontend library and
+a command line tool for using the OWLIM (http://www.ontotext.com/owlim)
+triple store with ease. You need a remote or local OWLIM installation.
+
+== Install
+
+  gem install owlim-ruby
+
+== Usage as a command
+
+  owlim command [repository [arguments]]
+
+=== Environmental variable
+
+Specify your OWLIM server by the environmental variable 'SESAME_URL'.
+Default is "http://localhost:8080/openrdf-sesame".
+
+for B shell:
+
+  export SESAME_URL="http://example.org/openrdf-sesame"
+
+for C shell:
+
+  setenv SESAME_URL "http://example.org/openrdf-sesame"
+
+=== Info commands
+
+Show the Sesame OWLIM server URI in use.
+
+  owlim host
+
+Show list of repositories.
+
+  owlim list
+
+Show number of triples in a repository.
+
+  owlim size repository
+
+=== CRUD commands
+
+Create a new repository.
+
+  owlim create repository
+
+Import a RDF file to a repository.
+
+  owlim import repository file [format]
+
+Export contents of a repository in RDF (default is RDF/XML).
+
+  owlim export repository [format]
+
+Clear the contents of a repository.
+
+  owlim clear repository
+
+Drop a repository.
+
+  owlim drop repository
+
+==== Valid formats for import and export
+
+ * RDF/XML: "rdf" or "rdfxml"
+ * Turtle: "ttl" or "turtle"
+ * N3: "n3"
+ * N-Triples: "nt"
+ * TriX: "trix"
+ * TriG: "trig"
+ * Bionary RDF: "rdfbin"
+
+If not specified, format will be guessed from the file name suffix for import.
+
+=== Query commands
+
+SPARQL query against a repository.
+
+  owlim query repository "SPARQL" [format]
+
+Search for literal objects by a keyword.
+
+  owlim find repository "keyword" [format]
+
+Result will be printed in the tabular text format by default.
+
+==== Available alternative formats
+
+ * "json" for "application/sparql-result+json"
+ * "xml" for "application/sparql-result+xml".
+
+=== Help
+
+  owlim help
+
+=== Examples
+
+  owlim host
+  owlim list
+
+  owlim create hoge
+  owlim import hoge ../hoge.ttl
+  owlim export hoge > hoge.rdf
+  owlim size   hoge
+  owlim clear  hoge
+  owlim drop   hoge
+
+  owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000'
+  owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' json
+  owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' xml
+
+  owlim find   hoge "fuga"
+  owlim find   hoge "fuga" json
+  owlim find   hoge "fuga" xml
+
+== Usage as a library
+
+Enable this library.
+
+  require 'rubygems'
+  require 'owlim'
+
+Create a server object. Argument is a URI of the OWLIM endpoint.
+
+  uri = "http://localhost:8080/openrdf-sesame"
+  owlim = OWLIM.new(uri)
+
+Show the endpoint URI.
+
+  puts owlim.sesame_url
+
+Show all repositories.
+
+  puts owlim.list
+
+Show the size of a given repository.
+
+  puts owlim.size(repository)
+
+Create new repository.
+
+  owlim.create(repository)
+
+Import a RDF file into a repository.
+
+  owlim.import(repository, rdf_file)
+  owlim.import(repository, rdf_file, :format => "turtle")
+
+The file format is automatically guessed by the suffix of a given file name.
+To specify the format, use :format => format option. Available formats are
+described in the "Valid formats for import and export" section above.
+
+Export triples from a repository.
+
+  owlim.export(repository)
+  owlim.export(repository, :format => "turtle")
+
+Clear a repository.
+
+  owlim.clear(repository)
+
+Drop a repository.
+
+  owlim.drop(repository)
+
+SPARQL query to a repository.
+
+  owlim.query(repository, sparql) {|x| print x}
+
+Use :format => "xml" option to retrieve the results in the SPARQL Query
+Results XML Format (http://www.w3.org/TR/rdf-sparql-XMLres/;
+"application/sparql-results+xml") and use :format => "json" to retrieve
+in the JSON (http://www.w3.org/2001/sw/DataAccess/json-sparql/;
+"application/sparql-results+json") format.
+
+  owlim.query(repository, sparql, :format => "xml") {|x| print x}
+  owlim.query(repository, sparql, :format => "json") {|x| print x}
+
+Search for a triple which has a keyword as a literal in its object and
+finds all relevant triples sharing the same subject.
+
+  owlim.find(repository, keyword) {|x| print x}
+
+== Authors
+
+ * Toshiaki Katayama (DBCLS; ktym@dbcls.jp)
+ * Tatsuya Nishizawa (IMSBIO)
+
+== License
+
+This program is free software. You can redistribute it and/or modify it
+under the same terms as Ruby itself.
+
