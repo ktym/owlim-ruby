@@ -51,7 +51,7 @@ CRUD commands:
 Query commands:
 
   Query a repository by SPARQL or a keyword.
-  Result will be printed in the tabular text format by default.
+  Result will be printed in a tabular text format by default.
 
   Available alternative formats are:
     * "json" for "application/sparql-result+json"

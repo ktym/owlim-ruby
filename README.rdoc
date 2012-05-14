@@ -1,6 +1,6 @@
 = OWLIM-RUBY
 
-This is a Semantic Web program which provides a frontend library and
+This is a Semantic Web program which provides a front-end library and
 a command line tool for using the OWLIM (http://www.ontotext.com/owlim)
 triple store with ease. You need a remote or local OWLIM installation.
 
@@ -63,13 +63,13 @@ Drop a repository.
 
 ==== Valid formats for import and export
 
- * RDF/XML: "rdf" or "rdfxml"
- * Turtle: "ttl" or "turtle"
- * N3: "n3"
- * N-Triples: "nt"
- * TriX: "trix"
- * TriG: "trig"
- * Bionary RDF: "rdfbin"
+* RDF/XML: "rdf" or "rdfxml"
+* Turtle: "ttl" or "turtle"
+* N3: "n3"
+* N-Triples: "nt"
+* TriX: "trix"
+* TriG: "trig"
+* Bionary RDF: "rdfbin"
 
 If not specified, format will be guessed from the file name suffix for import.
 
@@ -83,12 +83,12 @@ Search for literal objects by a keyword.
 
   owlim find repository "keyword" [format]
 
-Result will be printed in the tabular text format by default.
+Result will be printed in a tabular text format by default.
 
 ==== Available alternative formats
 
- * "json" for "application/sparql-result+json"
- * "xml" for "application/sparql-result+xml".
+* "json" for "application/sparql-result+json"
+* "xml" for "application/sparql-result+xml".
 
 === Help
 
@@ -168,7 +168,7 @@ SPARQL query to a repository.
 
   owlim.query(repository, sparql) {|x| print x}
 
-Use :format => "xml" option to retrieve the results in the SPARQL Query
+Use :format => "xml" option to retrieve results in the SPARQL Query
 Results XML Format (http://www.w3.org/TR/rdf-sparql-XMLres/;
 "application/sparql-results+xml") and use :format => "json" to retrieve
 in the JSON (http://www.w3.org/2001/sw/DataAccess/json-sparql/;
@@ -184,8 +184,8 @@ finds all relevant triples sharing the same subject.
 
 == Authors
 
- * Toshiaki Katayama (DBCLS; ktym@dbcls.jp)
- * Tatsuya Nishizawa (IMSBIO)
+* Toshiaki Katayama (DBCLS; ktym@dbcls.jp)
+* Tatsuya Nishizawa (IMSBIO)
 
 == License
 
