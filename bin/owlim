@@ -57,6 +57,9 @@ Query commands:
     * "json" for "application/sparql-result+json"
     * "xml" for "application/sparql-result+xml".
 
+  # Show list of prefixes which are automatically added to SPARQL
+  > owlim prefix
+
   # SPARQL query against a repository
   > owlim query repository "SPARQL" [format]
 
@@ -95,6 +98,8 @@ Examples:
   > owlim clear  hoge
   > owlim drop   hoge
 
+  > owlim prefix
+
   > owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000'
   > owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' json
   > owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' xml
@@ -115,9 +120,11 @@ arguments = ARGV
 
 case command
 when "host"
-  puts serv.sesame_url
+  puts serv.host
 when "list"
   puts serv.list
+when "prefix"
+  puts serv.prefix
 when "size"
   if repository
     puts serv.size(repository)

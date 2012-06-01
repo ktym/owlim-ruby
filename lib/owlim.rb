@@ -4,27 +4,28 @@ require "uuid"
 require "erb"
 require "net/http"
 require "cgi"
-#require "yaml"
 require "json"
 require "rexml/document"
 
 class OWLIM
 
+  attr :prefix_hash
+
   def initialize(url)
-    sesame_url(url)
+    @endpoint = url
+    uri = URI.parse(url)
+
+    @host = uri.host
+    @port = uri.port
+    @path = uri.path
+
+    @prefix_hash = prefix_default
+
     Net::HTTP.version_1_2
   end
 
-  def sesame_url(url = nil)
-    if url
-      @server = url
-      @uri = URI.parse(url)
-      @host = @uri.host
-      @port = @uri.port
-      @path = @uri.path
-    else
-      return @server
-    end
+  def host
+    return @endpoint
   end
 
   def list
@@ -36,7 +37,6 @@ class OWLIM
       result = response.body
     end
 
-    #hash = YAML.load(result)
     hash = JSON.parse(result)
 
     hash["results"]["bindings"].map {|b| b["id"]["value"]}
@@ -124,6 +124,8 @@ class OWLIM
   end
 
   def drop(repository)
+    clear(repository)
+
     rdftransaction = drop_repository(repository)
 
     Net::HTTP.start(@host, @port) do |http|
@@ -131,6 +133,13 @@ class OWLIM
                            rdftransaction,
                            {"Content-Type" => "application/x-rdftransaction"})
     end
+  end
+
+  def prefix
+    ary = @prefix_hash.map { |key, value|
+      "PREFIX #{key}: <#{value}>"
+    }
+    return ary.join("\n")
   end
 
   def query(repository, sparql, opts={}, &block)
@@ -144,18 +153,21 @@ class OWLIM
     else # tabular text
       format = "application/sparql-results+json"
     end
+
+    sparql_str = CGI.escape(prefix + sparql)
     
     Net::HTTP.start(@host, @port) do |http|
-      path = "#{@path}/repositories/#{repository}?query=#{CGI.escape(sparql)}"
+      path = "#{@path}/repositories/#{repository}?query=#{sparql_str}"
       http.get(path, {"Accept" => "#{format}"}) { |body|
-        if block and opts[:format]
+        if block and opts[:format] # xml or json
           yield body
-        else
+        else # tabular text
           result += body
         end
       }
     end
 
+    # generate tabular text (not reached if opts[:format] is defined)
     if table = format_json(result)
       if block
         yield table
@@ -171,6 +183,33 @@ class OWLIM
   end
 
   private
+
+  def prefix_default
+    @prefix_hash = {
+      "rdf"       => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+      "rdfs"      => "http://www.w3.org/2000/01/rdf-schema#",
+      "owl"       => "http://www.w3.org/2002/07/owl#",
+      "xsd"       => "http://www.w3.org/2001/XMLSchema#",
+      "pext"      => "http://proton.semanticweb.org/protonext#",
+      "psys"      => "http://proton.semanticweb.org/protonsys#",
+      "xhtml"     => "http://www.w3.org/1999/xhtml#",
+      "dc"        => "http://purl.org/dc/elements/1.1/",
+      "dcterms"   => "http://purl.org/dc/terms/",
+      "foaf"      => "http://xmlns.com/foaf/0.1/",
+      "skos"      => "http://www.w3.org/2004/02/skos/core#",
+      "void"      => "http://rdfs.org/ns/void#",
+      "dbpedia"   => "http://dbpedia.org/resource/",
+      "dbp"       => "http://dbpedia.org/property/",
+      "dbo"       => "http://dbpedia.org/ontology/",
+      "yago"      => "http://dbpedia.org/class/yago/",
+      "fb"        => "http://rdf.freebase.com/ns/",
+      "sioc"      => "http://rdfs.org/sioc/ns#",
+      "geo"       => "http://www.w3.org/2003/01/geo/wgs84_pos#",
+      "geonames"  => "http://www.geonames.org/ontology#",
+      "bibo"      => "http://purl.org/ontology/bibo/",
+      "prism"     => "http://prismstandard.org/namespaces/basic/2.1/",
+    }
+  end
 
   def content_type(format)
     case format
@@ -196,7 +235,6 @@ class OWLIM
 
   def format_json(json)
     begin
-      #hash = YAML.load(json)
       hash = JSON.parse(json)
       head = hash["head"]["vars"]
       body = hash["results"]["bindings"]

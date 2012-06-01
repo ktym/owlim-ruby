@@ -5,7 +5,8 @@ Gem::Specification.new do |s|
 
   s.authors = ["Toshiaki Katayama", "Tatsuya Nishizawa"]
   s.email = "k@bioruby.org"
-  s.homepage = ""
+  s.homepage = "https://github.com/ktym/owlim-ruby"
+  s.rubyforge_project = "owlim-ruby"
   s.summary = "OWLIM client library for Ruby"
   s.description = "Query and manage OWLIM triple store with ease."
 

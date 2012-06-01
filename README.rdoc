@@ -75,6 +75,10 @@ If not specified, format will be guessed from the file name suffix for import.
 
 === Query commands
 
+Show list of prefixes which are automatically added to SPARQL.
+
+  owlim prefix
+
 SPARQL query against a repository.
 
   owlim query repository "SPARQL" [format]
@@ -106,6 +110,8 @@ Result will be printed in a tabular text format by default.
   owlim clear  hoge
   owlim drop   hoge
 
+  owlim prefix
+
   owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000'
   owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' json
   owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' xml
@@ -128,7 +134,7 @@ Create a server object. Argument is a URI of the OWLIM endpoint.
 
 Show the endpoint URI.
 
-  puts owlim.sesame_url
+  puts owlim.host
 
 Show all repositories.
 
@@ -181,6 +187,23 @@ Search for a triple which has a keyword as a literal in its object and
 finds all relevant triples sharing the same subject.
 
   owlim.find(repository, keyword) {|x| print x}
+
+Show formatted SPARQL prefixes.
+
+  puts owlim.prefix
+
+Access current SPARQL prefixes.
+
+  owlim.prefix_hash.each {|pfx, uri| puts "PREFIX #{pfx}: <#{uri}>"}
+
+Add a SPARQL prefix.
+
+  owlim.prefix_hash["vcard"] = "http://www.w3.org/2006/vcard/ns#"
+
+Delete a SPARQL prefix.
+
+  owlim.prefix_hash.delete("skos")
+
 
 == Authors
 
