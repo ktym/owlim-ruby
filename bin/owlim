@@ -66,7 +66,7 @@ Query commands:
   # Search for literal objects matching a keyword and return relevant triples
   > owlim find repository "keyword" [format]
 
-  # Peak the triples
+  # Peek the triples in the store
   > owlim head repository [limit [offset [format]]]
 
 Environmental variable:

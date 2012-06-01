@@ -87,7 +87,8 @@ Search for literal objects by a keyword.
 
   owlim find repository "keyword" [format]
 
-Peak the triples in the store
+Peek the triples in the store.
+
   owlim head repository [limit [offset [format]]]
 
 Results will be printed in a tabular text format by default.
@@ -196,6 +197,12 @@ Search for a triple which has a keyword as a literal in its object and
 finds all relevant triples sharing the same subject.
 
   owlim.find(repository, keyword) {|x| print x}
+
+Peak the triples in the store. By default, OWLIM adds 62 triples to
+the empty repository when created, so offset + 61 is used internally.
+
+  opts = {:limit => 50, :offset => 100, :format => "json"}
+  owlim.head(repository, opts) {|x| print x}
 
 Show formatted SPARQL prefixes.
 
