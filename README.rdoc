@@ -87,7 +87,10 @@ Search for literal objects by a keyword.
 
   owlim find repository "keyword" [format]
 
-Result will be printed in a tabular text format by default.
+Peak the triples in the store
+  owlim head repository [limit [offset [format]]]
+
+Results will be printed in a tabular text format by default.
 
 ==== Available alternative formats
 
@@ -119,6 +122,12 @@ Result will be printed in a tabular text format by default.
   owlim find   hoge "fuga"
   owlim find   hoge "fuga" json
   owlim find   hoge "fuga" xml
+
+  owlim head   hoge
+  owlim head   hoge 10
+  owlim head   hoge 10 50 
+  owlim head   hoge 10 50 json
+  owlim head   hoge 10 50 xml
 
 == Usage as a library
 

@@ -66,6 +66,9 @@ Query commands:
   # Search for literal objects matching a keyword and return relevant triples
   > owlim find repository "keyword" [format]
 
+  # Peak the triples
+  > owlim head repository [limit [offset [format]]]
+
 Environmental variable:
 
   Specify your OWLIM server by the environmental variable 'SESAME_URL'.
@@ -108,6 +111,12 @@ Examples:
   > owlim find   hoge "fuga" json
   > owlim find   hoge "fuga" xml
 
+  > owlim head   hoge
+  > owlim head   hoge 10
+  > owlim head   hoge 10 50 
+  > owlim head   hoge 10 50 json
+  > owlim head   hoge 10 50 xml
+
 USAGE
 end
 
@@ -123,8 +132,6 @@ when "host"
   puts serv.host
 when "list"
   puts serv.list
-when "prefix"
-  puts serv.prefix
 when "size"
   if repository
     puts serv.size(repository)
@@ -187,6 +194,8 @@ when "drop"
     $stderr.puts "ERROR: missing a repository name to drop."
     $stderr.puts "> owlim drop repository"
   end
+when "prefix"
+  puts serv.prefix
 when "query"
   if repository
     if arguments.size > 1
@@ -222,6 +231,25 @@ when "find"
   else
     $stderr.puts "ERROR: missing a repository name to search."
     $stderr.puts "> owlim find repository keyword"
+  end
+when "head"
+  if repository
+    if arguments.size > 2
+      limit, offset, format, = *arguments
+    elsif arguments.size > 1
+      limit, offset, = *arguments
+    elsif arguments.size > 0
+      limit, = *arguments
+    end
+    opts = {
+      :limit => limit,
+      :offset => offset,
+      :format => format,
+    }
+    serv.head(repository, opts) {|x| print x}
+  else
+    $stderr.puts "ERROR: missing a repository name to search."
+    $stderr.puts "> owlim head repository [limit [offset [format]]"
   end
 when "help"
   help

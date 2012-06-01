@@ -136,8 +136,9 @@ class OWLIM
   end
 
   def prefix
-    ary = @prefix_hash.map { |key, value|
-      "PREFIX #{key}: <#{value}>"
+    ary = []
+    @prefix_hash.sort.each { |key, value|
+      ary << "PREFIX #{key}: <#{value}>"
     }
     return ary.join("\n")
   end
@@ -179,6 +180,13 @@ class OWLIM
 
   def find(repository, keyword, opts={}, &block)
     sparql = "select ?s ?p ?o where { ?s ?t '#{keyword}'. ?s ?p ?o . }"
+    query(repository, sparql, opts, &block)
+  end
+
+  def head(repository, opts={}, &block)
+    limit  = opts[:limit] || 20
+    offset = (opts[:offset] || 1).to_i + 61
+    sparql = "select ?s ?p ?o where { ?s ?p ?o . } offset #{offset} limit #{limit}"
     query(repository, sparql, opts, &block)
   end
 

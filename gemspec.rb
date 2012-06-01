@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'owlim-ruby'
-  s.version = "0.9.9"
+  s.version = "0.9.9.2"
   s.license = "Ruby's"
 
   s.authors = ["Toshiaki Katayama", "Tatsuya Nishizawa"]
