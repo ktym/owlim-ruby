@@ -168,8 +168,10 @@ class OWLIM
       }
     end
 
-    # generate tabular text (not reached if opts[:format] is defined)
-    if table = format_json(result)
+    if opts[:format] # xml or json
+      return result
+    else # generate tabular text
+      table = format_json(result)
       if block
         yield table
       else

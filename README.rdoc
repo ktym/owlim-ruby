@@ -183,6 +183,8 @@ Drop a repository.
 SPARQL query to a repository.
 
   owlim.query(repository, sparql) {|x| print x}
+    or
+  result = owlim.query(repository, sparql)
 
 Use :format => "xml" option to retrieve results in the SPARQL Query
 Results XML Format (http://www.w3.org/TR/rdf-sparql-XMLres/;
@@ -192,17 +194,28 @@ in the JSON (http://www.w3.org/2001/sw/DataAccess/json-sparql/;
 
   owlim.query(repository, sparql, :format => "xml") {|x| print x}
   owlim.query(repository, sparql, :format => "json") {|x| print x}
+    or
+  result = owlim.query(repository, sparql, :format => "xml")
+  result = owlim.query(repository, sparql, :format => "json")
 
 Search for a triple which has a keyword as a literal in its object and
 finds all relevant triples sharing the same subject.
 
   owlim.find(repository, keyword) {|x| print x}
+    or
+  result owlim.find(repository, keyword)
 
 Peak the triples in the store. By default, OWLIM adds 62 triples to
 the empty repository when created, so offset + 61 is used internally.
 
   opts = {:limit => 50, :offset => 100, :format => "json"}
   owlim.head(repository, opts) {|x| print x}
+    or
+  result = owlim.head(repository, opts)
+
+With a :format option and a block, the search results will be immediately
+sent in a stream for "query", "find" and "head" methods. In other cases,
+results are buffred and will not be returened until the search is completed.
 
 Show formatted SPARQL prefixes.
 
