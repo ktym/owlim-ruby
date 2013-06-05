@@ -19,7 +19,7 @@ class OWLIM
     @port = uri.port
     @path = uri.path
 
-    @prefix_hash = prefix_default
+    @prefix_hash = {}
 
     Net::HTTP.version_1_2
   end
@@ -192,8 +192,6 @@ class OWLIM
     query(repository, sparql, opts, &block)
   end
 
-  private
-
   def prefix_default
     @prefix_hash = {
       "rdf"       => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
@@ -220,6 +218,8 @@ class OWLIM
       "prism"     => "http://prismstandard.org/namespaces/basic/2.1/",
     }
   end
+
+  private
 
   def content_type(format)
     case format

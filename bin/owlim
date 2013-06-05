@@ -57,11 +57,14 @@ Query commands:
     * "json" for "application/sparql-result+json"
     * "xml" for "application/sparql-result+xml".
 
-  # Show list of prefixes which are automatically added to SPARQL
+  # Show a list of pre-defined prefixes
   > owlim prefix
 
-  # SPARQL query against a repository
+  # SPARQL query against a repository without pre-defined prefixes
   > owlim query repository "SPARQL" [format]
+
+  # SPARQL query against a repository including default prefixes
+  > owlim q repository "SPARQL" [format]
 
   # Search for literal objects matching a keyword and return relevant triples
   > owlim find repository "keyword" [format]
@@ -102,6 +105,10 @@ Examples:
   > owlim drop   hoge
 
   > owlim prefix
+
+  > owlim q      hoge 'select * where { ?s ?p ?o . } limit 1000'
+  > owlim q      hoge 'select * where { ?s ?p ?o . } limit 1000' json
+  > owlim q      hoge 'select * where { ?s ?p ?o . } limit 1000' xml
 
   > owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000'
   > owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' json
@@ -195,8 +202,12 @@ when "drop"
     $stderr.puts "> owlim drop repository"
   end
 when "prefix"
+  serv.prefix_default
   puts serv.prefix
-when "query"
+when "query", "q"
+  if command == "q"
+    serv.prefix_default
+  end
   if repository
     if arguments.size > 1
       sparql = arguments.shift
