@@ -75,13 +75,17 @@ If not specified, format will be guessed from the file name suffix for import.
 
 === Query commands
 
-Show list of prefixes which are automatically added to SPARQL.
+Show a list of pre-defined prefixes
 
   owlim prefix
 
-SPARQL query against a repository.
+SPARQL query against a repository without pre-defined prefixes
 
   owlim query repository "SPARQL" [format]
+
+SPARQL query against a repository including pre-defined prefixes
+
+  owlim q repository "SPARQL" [format]
 
 Search for literal objects by a keyword.
 
@@ -115,6 +119,10 @@ Results will be printed in a tabular text format by default.
   owlim drop   hoge
 
   owlim prefix
+
+  owlim q      hoge 'select * where { ?s ?p ?o . } limit 1000'
+  owlim q      hoge 'select * where { ?s ?p ?o . } limit 1000' json
+  owlim q      hoge 'select * where { ?s ?p ?o . } limit 1000' xml
 
   owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000'
   owlim query  hoge 'select * where { ?s ?p ?o . } limit 1000' json
